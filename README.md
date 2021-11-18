@@ -1,5 +1,8 @@
 # Protect the central diamond
 
+Diamond is a neon style arcade survival. Draw lines of the right colors to protect your diamond.
+Ranked #8 during the VGL Game Jam.
+
 Use arrow keys while holding 'w' or 'z' to create a red or blue line, then release the key to shoot at enemies of the same color.
 Keys
 
