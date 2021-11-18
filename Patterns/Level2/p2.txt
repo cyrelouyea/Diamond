@@ -1,0 +1,6 @@
+2 b TR TL
+2 b BR BL
+2 b BL R L
+2 b TL T B
+2 b TR TL
+2 b TR TL

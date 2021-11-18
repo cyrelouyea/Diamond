@@ -1,0 +1,17 @@
+1 r TR TL
+1 b TL BL
+1 r BL L R
+1 b L R
+1 b L R
+1 b L R
+1 b L R
+1 r T B
+1 r T B
+1 r T B
+1 r T B
+2 r TR TL BL
+2 r BR TR TL
+2 r TL BL BR
+2 b TR TL BL
+2 b BR TR TL
+2 b TL BL BR

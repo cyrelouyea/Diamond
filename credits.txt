@@ -1,0 +1,8 @@
+FONTS:
+- Polentical Neon - https://www.1001fonts.com/polentical-neon-font.html (CC BY-SA)
+
+BGM:
+- Digital Age by Scott Holmes Music - https://freemusicarchive.org/music/Scott_Holmes/media-music-mix/digital-age (CC BY-NC)
+
+ENGINE:
+- Godot Engine - https://godotengine.org (https://godotengine.org/license)

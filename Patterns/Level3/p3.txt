@@ -1,0 +1,14 @@
+2 r T B BR BL
+2 r T B TR TL
+2 b L R BR TR
+2 b L R BL TL
+1 r TR TL BL BR
+1 b TR TL BL BR
+2 r T B BR BL
+2 r T B TR TL
+2 b L R BR TR
+2 b L R BL TL
+1 r TR
+1 r TL
+1 r BL
+1 r BR

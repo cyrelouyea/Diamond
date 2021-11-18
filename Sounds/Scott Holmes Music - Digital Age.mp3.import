@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/Scott Holmes Music - Digital Age.mp3-b82e15e5d665a046cf0f674f6edc627c.mp3str"
+
+[deps]
+
+source_file="res://Sounds/Scott Holmes Music - Digital Age.mp3"
+dest_files=[ "res://.import/Scott Holmes Music - Digital Age.mp3-b82e15e5d665a046cf0f674f6edc627c.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

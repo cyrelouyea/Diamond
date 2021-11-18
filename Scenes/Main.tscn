@@ -1,0 +1,527 @@
+[gd_scene load_steps=40 format=2]
+
+[ext_resource path="res://Scenes/Zone.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Effect.gd" type="Script" id=2]
+[ext_resource path="res://Scripts/Main.gd" type="Script" id=3]
+[ext_resource path="res://Scripts/Diamond.gd" type="Script" id=4]
+[ext_resource path="res://Scenes/Beam.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/BeamLaunch.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scenes/Enemy.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Fonts/polentical-neon.regular.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://Scripts/Score.gd" type="Script" id=9]
+[ext_resource path="res://Scripts/Spawner.gd" type="Script" id=10]
+[ext_resource path="res://Patterns/Speed.gd" type="Script" id=11]
+[ext_resource path="res://Patterns/Combos.gd" type="Script" id=12]
+[ext_resource path="res://Scenes/SpawnCircle.tscn" type="PackedScene" id=13]
+[ext_resource path="res://Textures/health_bar.png" type="Texture" id=14]
+[ext_resource path="res://Patterns/ColorMaterial.tres" type="Material" id=15]
+[ext_resource path="res://Textures/beam.png" type="Texture" id=16]
+[ext_resource path="res://Scripts/HealthBar.gd" type="Script" id=17]
+[ext_resource path="res://Scripts/Border.gd" type="Script" id=18]
+[ext_resource path="res://Scripts/HiScore.gd" type="Script" id=19]
+[ext_resource path="res://Scripts/IsHighScore.gd" type="Script" id=20]
+[ext_resource path="res://Scripts/Level.gd" type="Script" id=21]
+[ext_resource path="res://Sounds/Scott Holmes Music - Digital Age.mp3" type="AudioStream" id=22]
+[ext_resource path="res://Sounds/kick.ogg" type="AudioStream" id=23]
+[ext_resource path="res://Sounds/laser2.wav" type="AudioStream" id=24]
+[ext_resource path="res://Scripts/Tutorial.gd" type="Script" id=25]
+[ext_resource path="res://Textures/arrow.png" type="Texture" id=26]
+[ext_resource path="res://Scripts/Arrows.gd" type="Script" id=27]
+
+[sub_resource type="CanvasItemMaterial" id=1]
+blend_mode = 1
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 20, 20 )
+
+[sub_resource type="Shader" id=3]
+code = "shader_type canvas_item;
+
+uniform float intensity;
+
+void fragment() {
+	vec2 uv = SCREEN_UV;
+	uv.y += float(int(intensity*0.005*cos(uv.y*512.0)*1000.0))/1000.0;
+	COLOR = texture(SCREEN_TEXTURE, uv);
+}"
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+shader_param/intensity = 0.0
+
+[sub_resource type="CanvasItemMaterial" id=6]
+blend_mode = 1
+
+[sub_resource type="DynamicFont" id=5]
+size = 24
+font_data = ExtResource( 8 )
+
+[sub_resource type="CanvasItemMaterial" id=7]
+blend_mode = 1
+
+[sub_resource type="DynamicFont" id=8]
+size = 42
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=9]
+size = 32
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=10]
+size = 24
+outline_color = Color( 1, 0.12549, 0.12549, 1 )
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=11]
+size = 28
+font_data = ExtResource( 8 )
+
+[sub_resource type="CanvasItemMaterial" id=12]
+blend_mode = 1
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Diamond" type="Area2D" parent="."]
+position = Vector2( 640, 480 )
+collision_layer = 4
+collision_mask = 2
+script = ExtResource( 4 )
+beam_launcher_sc = ExtResource( 6 )
+
+[node name="ZoneTop" parent="Diamond" instance=ExtResource( 1 )]
+position = Vector2( 0, -160 )
+
+[node name="ZoneBottom" parent="Diamond" instance=ExtResource( 1 )]
+position = Vector2( 0, 160 )
+
+[node name="ZoneLeft" parent="Diamond" instance=ExtResource( 1 )]
+position = Vector2( -160, 0 )
+
+[node name="ZoneRight" parent="Diamond" instance=ExtResource( 1 )]
+position = Vector2( 160, 0 )
+
+[node name="Effect" type="Node2D" parent="Diamond"]
+material = SubResource( 1 )
+script = ExtResource( 2 )
+
+[node name="BeamBR" parent="Diamond" instance=ExtResource( 5 )]
+position = Vector2( 80, 80 )
+rotation = -0.785398
+size = 226.0
+
+[node name="BeamTR" parent="Diamond" instance=ExtResource( 5 )]
+position = Vector2( 80, -80 )
+rotation = 3.92699
+size = 226.0
+
+[node name="BeamTL" parent="Diamond" instance=ExtResource( 5 )]
+position = Vector2( -80, -80 )
+rotation = -3.92699
+size = 226.0
+
+[node name="BeamBL" parent="Diamond" instance=ExtResource( 5 )]
+position = Vector2( -80, 80 )
+rotation = 0.785398
+size = 226.0
+
+[node name="BeamH" parent="Diamond" instance=ExtResource( 5 )]
+size = 320.0
+
+[node name="BeamV" parent="Diamond" instance=ExtResource( 5 )]
+rotation = 1.5708
+size = 320.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Diamond"]
+rotation = 0.785398
+shape = SubResource( 2 )
+
+[node name="Spawner" type="Node2D" parent="Diamond"]
+script = ExtResource( 10 )
+enemy_sc = ExtResource( 7 )
+circle_sc = ExtResource( 13 )
+
+[node name="Border" type="Node2D" parent="Diamond"]
+script = ExtResource( 18 )
+
+[node name="LaunchSE" type="AudioStreamPlayer" parent="Diamond"]
+stream = ExtResource( 24 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="RectMiddle" type="ColorRect" parent="CanvasLayer"]
+material = SubResource( 4 )
+margin_left = 160.0
+margin_right = 1120.0
+margin_bottom = 960.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RectLeft" type="ColorRect" parent="CanvasLayer"]
+margin_right = 160.0
+margin_bottom = 960.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Combos" type="Node2D" parent="CanvasLayer/RectLeft"]
+position = Vector2( 80, 640 )
+script = ExtResource( 12 )
+
+[node name="CombosLabel" type="Label" parent="CanvasLayer/RectLeft/Combos"]
+material = SubResource( 6 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = -26.0
+margin_right = 88.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "COMBOS"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CombosValue" type="Label" parent="CanvasLayer/RectLeft/Combos"]
+material = SubResource( 7 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = 20.0
+margin_right = 88.0
+margin_bottom = 73.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Level" type="Node2D" parent="CanvasLayer/RectLeft"]
+position = Vector2( 80, 42 )
+script = ExtResource( 21 )
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer/RectLeft/Level"]
+material = SubResource( 6 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = -26.0
+margin_right = 88.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "LEVEL"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LevelValue" type="Label" parent="CanvasLayer/RectLeft/Level"]
+material = SubResource( 7 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = 20.0
+margin_right = 88.0
+margin_bottom = 73.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Speed" type="Node2D" parent="CanvasLayer/RectLeft"]
+position = Vector2( 80, 320 )
+script = ExtResource( 11 )
+
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/RectLeft/Speed"]
+material = SubResource( 6 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = -26.0
+margin_right = 88.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "SPEED"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SpeedValue" type="Label" parent="CanvasLayer/RectLeft/Speed"]
+material = SubResource( 7 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = 20.0
+margin_right = 88.0
+margin_bottom = 73.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" type="Node2D" parent="CanvasLayer/RectLeft"]
+position = Vector2( 80, 480 )
+script = ExtResource( 9 )
+
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/RectLeft/Score"]
+material = SubResource( 6 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = -26.0
+margin_right = 88.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "SCORE"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScoreValue" type="Label" parent="CanvasLayer/RectLeft/Score"]
+material = SubResource( 7 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = 20.0
+margin_right = 88.0
+margin_bottom = 73.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RectRight" type="ColorRect" parent="CanvasLayer"]
+margin_left = 1120.0
+margin_right = 1280.0
+margin_bottom = 960.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HiScore" type="Node2D" parent="CanvasLayer/RectRight"]
+position = Vector2( 80, 50 )
+script = ExtResource( 19 )
+
+[node name="HiScoreLabel" type="Label" parent="CanvasLayer/RectRight/HiScore"]
+material = SubResource( 6 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = -26.0
+margin_right = 88.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "HI SCORE"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="HiScoreValue" type="Label" parent="CanvasLayer/RectRight/HiScore"]
+material = SubResource( 7 )
+anchor_right = 0.1
+margin_left = -87.0
+margin_top = 20.0
+margin_right = 88.0
+margin_bottom = 73.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "0"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthBar" type="Node2D" parent="CanvasLayer/RectRight"]
+position = Vector2( 80, 520 )
+script = ExtResource( 17 )
+
+[node name="Border" type="Sprite" parent="CanvasLayer/RectRight/HealthBar"]
+material = ExtResource( 15 )
+texture = ExtResource( 14 )
+
+[node name="Bar" type="Sprite" parent="CanvasLayer/RectRight/HealthBar"]
+modulate = Color( 1, 1, 1, 0.717647 )
+material = ExtResource( 15 )
+position = Vector2( -24, 380 )
+rotation = 4.71239
+scale = Vector2( 1, 1.5 )
+texture = ExtResource( 16 )
+centered = false
+region_enabled = true
+region_rect = Rect2( 0, 0, 760, 32 )
+
+[node name="GameOver" type="Node2D" parent="."]
+visible = false
+position = Vector2( 640, 64 )
+
+[node name="GameOverLabel" type="Label" parent="GameOver"]
+margin_left = -640.0
+margin_top = -26.0
+margin_right = 640.0
+margin_bottom = 27.0
+custom_fonts/font = SubResource( 8 )
+text = "GAME OVER"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FinalScore" type="Label" parent="GameOver"]
+margin_left = -640.0
+margin_top = 32.0
+margin_right = 640.0
+margin_bottom = 73.0
+custom_fonts/font = SubResource( 9 )
+text = "SCORE"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="IsHighScore" type="Label" parent="GameOver"]
+margin_left = -640.0
+margin_top = 68.0
+margin_right = 640.0
+margin_bottom = 109.0
+custom_colors/font_color = Color( 1, 0.913725, 0.12549, 1 )
+custom_fonts/font = SubResource( 10 )
+text = "HIGH SCORE !"
+align = 1
+valign = 1
+script = ExtResource( 20 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Restart" type="Label" parent="GameOver"]
+margin_left = -640.0
+margin_top = 121.0
+margin_right = 640.0
+margin_bottom = 162.0
+custom_fonts/font = SubResource( 9 )
+text = "Press 'R' to restart"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tutorial" type="Node2D" parent="."]
+script = ExtResource( 25 )
+
+[node name="Label" type="Label" parent="Tutorial"]
+margin_left = 190.0
+margin_top = 721.0
+margin_right = 1090.0
+margin_bottom = 841.0
+rect_pivot_offset = Vector2( 324, 77 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_fonts/font = SubResource( 11 )
+text = "Move cursor while holding 'W' to draw a red line. Release key to shoot."
+align = 1
+valign = 1
+autowrap = true
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="Tutorial"]
+margin_left = 190.0
+margin_top = 781.0
+margin_right = 1090.0
+margin_bottom = 901.0
+rect_pivot_offset = Vector2( 324, 77 )
+custom_colors/font_color = Color( 0.12549, 0.12549, 1, 1 )
+custom_fonts/font = SubResource( 11 )
+text = " Use 'X' to draw a blue line"
+align = 1
+valign = 1
+autowrap = true
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label3" type="Label" parent="Tutorial"]
+margin_left = 180.0
+margin_top = 97.0
+margin_right = 1080.0
+margin_bottom = 217.0
+rect_pivot_offset = Vector2( 324, 77 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 11 )
+text = "Protect the diamond"
+align = 1
+valign = 1
+autowrap = true
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Arrows" type="Node2D" parent="Tutorial"]
+modulate = Color( 0.792157, 0.792157, 0.792157, 1 )
+material = SubResource( 12 )
+position = Vector2( 640, 480 )
+script = ExtResource( 27 )
+
+[node name="Right" type="Sprite" parent="Tutorial/Arrows"]
+position = Vector2( 160, 0 )
+texture = ExtResource( 26 )
+
+[node name="Down" type="Sprite" parent="Tutorial/Arrows"]
+position = Vector2( 0, 160 )
+rotation = 1.5708
+texture = ExtResource( 26 )
+
+[node name="Left" type="Sprite" parent="Tutorial/Arrows"]
+position = Vector2( -160, 0 )
+rotation = 3.14159
+texture = ExtResource( 26 )
+
+[node name="Up" type="Sprite" parent="Tutorial/Arrows"]
+position = Vector2( 0, -160 )
+rotation = 4.71239
+texture = ExtResource( 26 )
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 22 )
+volume_db = -8.739
+autoplay = true
+
+[node name="HitSE" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 23 )
+volume_db = -5.0
+pitch_scale = 1.17
+
+[connection signal="area_entered" from="Diamond" to="." method="_on_Diamond_area_entered"]
+[connection signal="change_level" from="Diamond/Spawner" to="." method="_on_Spawner_change_level"]
+[connection signal="change_speed" from="Diamond/Spawner" to="." method="_on_Spawner_change_speed"]
+[connection signal="zero_health" from="CanvasLayer/RectRight/HealthBar" to="." method="_on_HealthBar_zero_health"]
